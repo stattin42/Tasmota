@@ -216,8 +216,12 @@ bool TasmotaSerial::begin(uint32_t speed, uint32_t config) {
       serial_buffer_size = 256;
     }
 #ifdef ESP8266
+    // configure hw serial for TX only if no rx pin, or RX only if no tx pin
+    SerialMode mode = SERIAL_FULL;
+    if (m_rx_pin==-1) mode = SERIAL_TX_ONLY;
+    if (m_tx_pin==-1) mode = SERIAL_RX_ONLY;
     Serial.flush();
-    Serial.begin(speed, (SerialConfig)config);
+    Serial.begin(speed, (SerialConfig)config, (SerialMode)mode);
     if (m_hardswap) {
       Serial.swap();
     }

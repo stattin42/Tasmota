@@ -115,7 +115,11 @@ void Sr04TModeDetect(void) {
   if (!PinUsed(GPIO_SR04_ECHO)) { return; }
 
   int sr04_echo_pin = Pin(GPIO_SR04_ECHO);
+#ifdef USE_SR04_RX
+  int sr04_trig_pin = -1;   // if RX only, don't configure tx
+#else
   int sr04_trig_pin = Pin(GPIO_SR04_TRIG);  // if GPIO_SR04_TRIG is not configured use single PIN mode with GPIO_SR04_TRIG as -1
+#endif
   sonar_serial = new TasmotaSerial(sr04_echo_pin, sr04_trig_pin, 1);
 
   if (sonar_serial && sonar_serial->begin(9600)) {
